@@ -131,26 +131,28 @@ echo -e "\nYou have chosen ${DNSSRV[$snum]} from the list of DNS Servers to test
 		fi
 		NAPTEST=`dig @${DNSSRV[$snum]} NAPTR edge.uc.fuze.site +short +timeout=3`
 		if grep -q "timed" <<< $NAPTEST; then 
+       		echo -e "\ndig @${DNSSRV[$snum]} NAPTR edge.uc.fuze.site +timeout=3"
 			echo -e "*** ${DNSSRV[$snum]} Fail (Timeout) ***\n"
 			exit
 		elif [[ -z $NAPTEST ]]; then
+       		echo -e "\ndig @${DNSSRV[$snum]} NAPTR edge.uc.fuze.site +timeout=3"
 			echo -e "*** ${DNSSRV[$snum]} Fail (No Recursion) ***\n"
 			exit
 		fi
-       		echo -e "\ndig @${DNSSRV[$snum]} NAPTR edge.uc.fuze.site +short +timeout=3"
+       		echo -e "\ndig @${DNSSRV[$snum]} NAPTR edge.uc.fuze.site +timeout=3"
 		dig @${DNSSRV[$snum]} NAPTR edge.uc.fuze.site +short +timeout=3
        		ANSWER[$a]=`dig @${DNSSRV[$snum]} NAPTR edge.uc.fuze.site +short +timeout=3 | head -1 | cut -d " " -f 6`
        		
-		echo -e "\ndig @${DNSSRV[$snum]} SRV ${ANSWER[$a]} +short +timeout=3"
+		echo -e "\ndig @${DNSSRV[$snum]} SRV ${ANSWER[$a]} +timeout=3"
 	  	dig @${DNSSRV[$snum]} SRV ${ANSWER[$a]} +short +timeout=3	
        		ANSWER[(($a+1))]=`dig @${DNSSRV[$snum]} SRV ${ANSWER[$a]} +short +timeout=3 | head -1 | cut -d " " -f 4`
 
-		ATEST=`dig @${DNSSRV[$snum]} ${ANSWER[$a]} +short +timeout=3`
+		ATEST=`dig @${DNSSRV[$snum]} ${ANSWER[$a]} +timeout=3`
 		if grep -q "timed" <<< $ATEST; then
 			echo -e "*** ${DNSSRV[$snum]} Fail (Timeout) ***\n"
 			exit
 		fi
-		echo -e "\ndig @${DNSSRV[$snum]} ${ANSWER[$a+1]} +short +timeout=3"
+		echo -e "\ndig @${DNSSRV[$snum]} ${ANSWER[$a+1]} +timeout=3"
 		dig @${DNSSRV[$snum]} ${ANSWER[$a+1]} +short +timeout=3
        		ANSWER[(($a+2))]=`dig @${DNSSRV[$snum]} ${ANSWER[(($a+1))]} +short +timeout=3`
 
