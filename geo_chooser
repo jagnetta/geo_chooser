@@ -55,9 +55,26 @@ echo -e "According to https://public-dns.info there are $SRVTOT DNS servers in $
 if [ $SRVTOT -lt 20 ] ; then
 	if [ $SRVTOT -eq 1 ] ; then
 		echo -e "*** Now Testing ${DNSSRV[0]}, <Ctrl+c> to skip ***"
-		echo
+                if grep -q ":" <<< ${DNSSRV[0]}; then
+                        echo -e "*** ${DNSSRV[0]} Fail (Skipping IPv6 Result) ***\n"
+                        exit
+                fi
+		NAPTEST=`dig @${DNSSRV[0]} NAPTR edge.uc.fuze.site +short +timeout=3`
+                if grep -q "timed" <<< $NAPTEST; then
+                echo -e "\ndig @${DNSSRV[0]} NAPTR edge.uc.fuze.site +timeout=3"
+                        echo -e "*** ${DNSSRV[0]} Fail (Timeout) ***\n"
+                        exit
+                elif [[ -z $NAPTEST ]]; then
+                echo -e "\ndig @${DNSSRV[0]} NAPTR edge.uc.fuze.site +timeout=3"
+                        echo -e "*** ${DNSSRV[0]} Fail (No Recursion) ***\n"
+                        exit
+                fi
+
+	
        		echo -e "dig @${DNSSRV[0]} NAPTR edge.uc.fuze.site +short +timeout=3\n"
        		dig @${DNSSRV[0]} NAPTR edge.uc.fuze.site +short +timeout=3
+
+
 		exit 
 	fi
 #
