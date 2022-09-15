@@ -10,3 +10,4 @@ This script references Public DNS Server information from:	https://public-dns.in
 
 The script uses the country code provided to find the IP addresses of public DNS servers in that country from the corresponding list found at the https://public-dns.info website.
 
+test edit
